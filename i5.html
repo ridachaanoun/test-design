@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>YouCode Intranet - Home</title>
+    <link rel="preconnect" href="https://cdn.tailwindcss.com" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+    />
+    <!-- Alpine.js for interactivity -->
+    <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              primary: {
+                DEFAULT: "#2C3E50",
+                dark: "#1C2833"
+              },
+              secondary: "#E74C3C",
+              accent: "#18BC9C",
+              background: "#1A2531"
+            }
+          }
+        }
+      }
+    </script>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body class="bg-background text-white" 
+        x-data="{
+          sidebarOpen: true,
+          currentDateTime: '',
+          updateDateTime() {
+            const now = new Date();
+            const year = now.getUTCFullYear();
+            const month = String(now.getUTCMonth() + 1).padStart(2, '0');
+            const day = String(now.getUTCDate()).padStart(2, '0');
+            const hours = String(now.getUTCHours()).padStart(2, '0');
+            const minutes = String(now.getUTCMinutes()).padStart(2, '0');
+            const seconds = String(now.getUTCSeconds()).padStart(2, '0');
+            this.currentDateTime = `${year}-${month}-${day} ${hours}:${minutes}:${seconds} UTC`;
+          }
+        }"
+        x-init="updateDateTime(); setInterval(updateDateTime, 1000);">
+    <!-- Header with Live Time -->
+    <header class="fixed top-0 left-0 w-full z-50 bg-primary shadow-lg">
+      <nav class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+        <div class="flex items-center space-x-4">
+          <a href="/" class="flex items-center space-x-2">
+            <img src="/src/img/logo-white.png" alt="YouCode Logo" class="h-8 w-auto" />
+            <span class="text-xs font-bold tracking-wider">INTRANET</span>
+          </a>
+          <!-- Mobile Menu Button -->
+          <button @click="sidebarOpen = !sidebarOpen" 
+                  class="md:hidden text-white hover:text-accent transition-colors"
+                  aria-label="Toggle Sidebar">
+            <i class="fas" :class="sidebarOpen ? 'fa-times' : 'fa-bars'"></i>
+          </button>
+        </div>
+        <div class="hidden md:flex items-center space-x-6">
+          <!-- Live UTC Time Display -->
+          <div class="text-sm font-medium" x-text="currentDateTime"></div>
+          <!-- Search Bar -->
+          <div class="relative">
+            <form action="/search" method="GET">
+              <input type="text" 
+                     name="q" 
+                     placeholder="Search..."
+                     class="w-64 pl-4 pr-10 py-2 rounded-lg bg-white/10 text-white placeholder-gray-300 border-none focus:ring-2 focus:ring-accent transition-all" />
+              <button type="submit" 
+                      class="absolute right-3 top-2.5 text-white hover:text-accent transition-colors">
+                <i class="fas fa-search"></i>
+              </button>
+            </form>
+          </div>
+          <!-- Notifications -->
+          <div class="relative" x-data="{ notificationOpen: false }">
+            <button @click="notificationOpen = !notificationOpen"
+                    class="relative text-white hover:text-accent transition-colors"
+                    aria-label="Notifications">
+              <i class="fas fa-bell text-xl"></i>
+              <span class="absolute -top-1 -right-1 bg-secondary text-white text-xs rounded-full w-4 h-4 flex items-center justify-center">
+                0
+              </span>
+            </button>
+            <div x-show="notificationOpen" 
+                 @click.away="notificationOpen = false"
+                 x-transition
+                 class="absolute right-0 mt-2 w-80 bg-white text-gray-800 rounded-lg shadow-lg py-2 z-50"
+                 style="display: none;">
+              <div class="px-4 py-2 border-b border-gray-200">
+                <h3 class="text-sm font-semibold">Notifications</h3>
+              </div>
+              <div class="px-4 py-2 text-sm">
+                No new notifications
+              </div>
+            </div>
+          </div>
+          <!-- Profile Dropdown -->
+          <div class="relative" x-data="{ profileOpen: false }">
+            <button @click="profileOpen = !profileOpen"
+                    class="flex items-center space-x-3 hover:text-accent transition-colors"
+                    aria-label="User Profile">
+              <img src="https://ui-avatars.com/api/?name=Rida+Chaanoun&background=18BC9C&color=fff" 
+                   alt="Rida Chaanoun" 
+                   class="w-8 h-8 rounded-full border-2 border-accent" />
+              <span class="font-medium">Rida Chaanoun</span>
+              <i class="fas fa-chevron-down text-xs"></i>
+            </button>
+            <div x-show="profileOpen"
+                 @click.away="profileOpen = false"
+                 x-transition
+                 class="absolute right-0 mt-2 w-48 bg-white text-gray-800 rounded-lg shadow-lg py-2 z-50"
+                 style="display: none;">
+              <a href="/profile" class="block px-4 py-2 text-sm hover:bg-gray-100">
+                <i class="fas fa-user-circle mr-2"></i> Profile
+              </a>
+              <a href="/settings" class="block px-4 py-2 text-sm hover:bg-gray-100">
+                <i class="fas fa-cog mr-2"></i> Settings
+              </a>
+              <div class="border-t border-gray-200 my-2"></div>
+              <form action="/logout" method="POST" id="logout-form">
+                <input type="hidden" name="_token" value="cqJJMstC2dkNxcRchq5k9M2ytquUj9LnuElncUmo" />
+                <button type="submit" 
+                        class="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-gray-100">
+                  <i class="fas fa-sign-out-alt mr-2"></i> Logout
+                </button>
+              </form>
+            </div>
+          </div>
+        </div>
+      </nav>
+      <!-- Mobile Navigation (if desired) -->
+      <div x-show="!sidebarOpen" 
+           class="md:hidden bg-primary border-t border-white/10" 
+           x-transition style="display: none;">
+        <nav class="px-2 pt-2 pb-3 space-y-1">
+          <a href="/" class="block px-3 py-2 hover:bg-white/10 rounded-md">Home</a>
+          <a href="/network" class="block px-3 py-2 hover:bg-white/10 rounded-md">Network</a>
+          <a href="/classrooms" class="block px-3 py-2 hover:bg-white/10 rounded-md">Classrooms</a>
+          <a href="/transport" class="block px-3 py-2 hover:bg-white/10 rounded-md">Transport</a>
+          <a href="/marketplace" class="block px-3 py-2 hover:bg-white/10 rounded-md">
+            Marketplace
+            <span class="ml-2 text-xs bg-secondary px-2 py-0.5 rounded-full">New</span>
+          </a>
+        </nav>
+      </div>
+    </header>
+    
+    <!-- Main Content Area -->
+    <main 
+      :class="sidebarOpen ? 'ml-64' : 'ml-20'" 
+      class="flex-1 p-8 mt-16 transition-all duration-300"
+    >
+      <h1 class="text-2xl font-bold mb-6">👋 Welcome back Rida!</h1>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <!-- Hall of Fame -->
+        <div class="bg-primary rounded-lg overflow-hidden shadow-lg">
+          <div class="bg-primary-dark p-4 flex justify-between items-center">
+            <h2 class="text-lg font-semibold text-white">Hall of Fame</h2>
+          </div>
+          <div class="divide-y divide-primary/20">
+            <!-- Hall of Fame Entry -->
+            <div class="p-4 flex justify-between items-center hover:bg-primary/10 transition-colors">
+              <div class="flex items-center space-x-4">
+                <img 
+                  src="https://ui-avatars.com/api/?name=Fidele+Yonli" 
+                  class="w-12 h-12 rounded-lg object-cover"
+                  alt="Fidèle Yonli"
+                >
+                <div>
+                  <h4 class="font-medium text-white">Fidèle Yonli</h4>
+                  <p class="text-sm text-gray-400">@fidèleyonli</p>
+                  <div class="text-xs text-gray-500 flex items-center">
+                    <i class="fas fa-location-dot mr-1"></i>
+                    Youssoufia
+                  </div>
+                </div>
+              </div>
+              <span class="text-2xl font-extrabold text-amber-500">1068 YC</span>
+            </div>
+            <!-- Additional Hall of Fame entries would follow similar pattern -->
+          </div>
+        </div>
+  
+        <!-- BDE Members -->
+        <div class="bg-primary rounded-lg overflow-hidden shadow-lg">
+          <div class="bg-primary-dark p-4 flex justify-between items-center">
+            <h2 class="text-lg font-semibold text-white">BDE Members</h2>
+            <span class="bg-yellow-400 text-primary px-2 py-1 rounded-full text-xs">
+              17 learners
+            </span>
+          </div>
+          <div class="p-6 bg-red-300">
+            <div class="grid grid-cols-2 gap-4">
+              <div class="flex flex-col items-center">
+                <img 
+                  src="https://ui-avatars.com/api/?name=Imadeddine+Saghir" 
+                  class="w-16 h-16 rounded-full object-cover shadow-sm hover:ring-2 hover:ring-accent transition-all"
+                  alt="Imadeddine Saghir"
+                >
+                <h4 class="text-sm font-medium text-white mt-2 text-center truncate">
+                  Imadeddine Saghir
+                </h4>
+                <div class="text-xs text-gray-400 flex items-center">
+                  <i class="fas fa-location-dot mr-1"></i>
+                  Safi
+                </div>
+              </div>
+              <!-- More BDE members would be added here -->
+            </div>
+          </div>
+        </div>
+  
+        <!-- Classroom Delegates -->
+        <div class="bg-primary rounded-lg overflow-hidden shadow-lg">
+          <div class="bg-primary-dark p-4 flex justify-between items-center">
+            <h2 class="text-lg font-semibold text-white">Classroom Delegates</h2>
+            <span class="bg-yellow-400 text-primary px-2 py-1 rounded-full text-xs">
+              19 learners
+            </span>
+          </div>
+          <div class="p-6">
+            <div class="grid grid-cols-4 gap-4">
+              <div class="flex flex-col items-center group relative">
+                <img 
+                  src="https://ui-avatars.com/api/?name=Abdeljalil+El+Filaly" 
+                  class="w-16 h-16 rounded-full object-cover shadow-sm group-hover:ring-2 group-hover:ring-accent transition-all"
+                  alt="Abdeljalil El Filaly"
+                >
+                <h4 class="text-sm font-medium text-white mt-2 text-center truncate">
+                  Abdeljalil El Filaly
+                </h4>
+                <div class="text-xs text-gray-400 flex items-center">
+                  <i class="fas fa-location-dot mr-1"></i>
+                  Youssoufia
+                </div>
+                <div class="absolute -top-2 -right-2 bg-accent text-white text-xs px-2 py-0.5 rounded-full">
+                  2ème Année
+                </div>
+              </div>
+              <!-- More classroom delegates would be added here -->
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+  </body>
+</html>

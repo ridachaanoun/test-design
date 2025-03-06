@@ -1,0 +1,952 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>YouCode Intranet - Accueil</title>
+    <style>
+        :root {
+            --primary: #3498db;
+            --primary-dark: #2980b9;
+            --secondary: #2ecc71;
+            --accent: #f39c12;
+            --light-bg: #f8f9fa;
+            --gray: #e9ecef;
+            --dark-gray: #495057;
+            --error: #e74c3c;
+            --white: #ffffff;
+            --shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Open Sans', sans-serif;
+        }
+        
+        body {
+            background-color: var(--light-bg);
+            color: var(--dark-gray);
+        }
+        
+        h1, h2, h3, h4, h5, h6 {
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 600;
+        }
+        
+        /* Layout */
+        .layout {
+            display: flex;
+            min-height: 100vh;
+        }
+        
+        /* Sidebar */
+        .sidebar {
+            width: 250px;
+            background-color: var(--white);
+            box-shadow: var(--shadow);
+            padding: 20px 0;
+            z-index: 10;
+        }
+        
+        .sidebar-logo {
+            padding: 0 20px 20px;
+            border-bottom: 1px solid var(--gray);
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: center;
+        }
+        
+        .sidebar-logo img {
+            max-width: 150px;
+        }
+        
+        .sidebar-menu {
+            list-style: none;
+        }
+        
+        .sidebar-menu li {
+            margin-bottom: 5px;
+        }
+        
+        .sidebar-menu a {
+            display: flex;
+            align-items: center;
+            padding: 12px 20px;
+            color: var(--dark-gray);
+            text-decoration: none;
+            transition: all 0.3s;
+        }
+        
+        .sidebar-menu a:hover, .sidebar-menu a.active {
+            background-color: rgba(52, 152, 219, 0.1);
+            color: var(--primary);
+            border-left: 3px solid var(--primary);
+        }
+        
+        .sidebar-menu i {
+            margin-right: 10px;
+            width: 20px;
+            text-align: center;
+        }
+        
+        /* Main Content */
+        .main {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        /* Header */
+        .header {
+            background-color: var(--white);
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: var(--shadow);
+            z-index: 5;
+        }
+        
+        .header-search {
+            position: relative;
+        }
+        
+        .header-search input {
+            padding: 8px 15px;
+            padding-left: 35px;
+            border: 1px solid var(--gray);
+            border-radius: 20px;
+            width: 250px;
+            font-size: 14px;
+        }
+        
+        .header-search i {
+            position: absolute;
+            left: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--dark-gray);
+        }
+        
+        .header-right {
+            display: flex;
+            align-items: center;
+        }
+        
+        .header-right .notif {
+            position: relative;
+            margin-right: 20px;
+            color: var(--dark-gray);
+            cursor: pointer;
+        }
+        
+        .header-right .notif .badge {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background-color: var(--accent);
+            color: var(--white);
+            font-size: 10px;
+            width: 15px;
+            height: 15px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .user-profile {
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+        }
+        
+        .user-profile img {
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            margin-right: 10px;
+        }
+        
+        /* Content */
+        .content {
+            padding: 20px;
+            flex: 1;
+        }
+        
+        .welcome-banner {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white;
+            border-radius: 10px;
+            padding: 30px;
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .welcome-banner h1 {
+            font-size: 24px;
+            margin-bottom: 10px;
+        }
+        
+        .welcome-banner p {
+            font-size: 16px;
+            opacity: 0.9;
+            margin-bottom: 20px;
+            max-width: 70%;
+        }
+        
+        .welcome-banner .btn {
+            background-color: white;
+            color: var(--primary);
+            font-weight: 600;
+        }
+        
+        .welcome-banner .btn:hover {
+            background-color: rgba(255, 255, 255, 0.9);
+        }
+        
+        .welcome-banner::after {
+            content: '';
+            position: absolute;
+            right: -50px;
+            top: -50px;
+            width: 200px;
+            height: 200px;
+            background-color: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+        }
+        
+        .welcome-banner::before {
+            content: '';
+            position: absolute;
+            right: 50px;
+            bottom: -50px;
+            width: 120px;
+            height: 120px;
+            background-color: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+        }
+        
+        /* Dashboard Grid Layout */
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 20px;
+        }
+        
+        /* Announcements */
+        .announcements {
+            margin-bottom: 30px;
+        }
+        
+        .section-title {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        
+        .section-title h2 {
+            font-size: 18px;
+        }
+        
+        .section-title a {
+            color: var(--primary);
+            font-size: 14px;
+            text-decoration: none;
+        }
+        
+        .announcement-card {
+            background-color: var(--white);
+            border-radius: 8px;
+            box-shadow: var(--shadow);
+            padding: 20px;
+            margin-bottom: 15px;
+        }
+        
+        .announcement-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        
+        .announcement-header img {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            margin-right: 15px;
+        }
+        
+        .announcement-author {
+            font-weight: 600;
+        }
+        
+        .announcement-date {
+            font-size: 12px;
+            color: #666;
+        }
+        
+        .announcement-title {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+        
+        .announcement-content {
+            font-size: 14px;
+            line-height: 1.6;
+            margin-bottom: 15px;
+        }
+        
+        .announcement-footer {
+            display: flex;
+            align-items: center;
+            font-size: 13px;
+            color: #666;
+        }
+        
+        .announcement-footer .target {
+            display: flex;
+            align-items: center;
+        }
+        
+        .announcement-footer i {
+            margin-right: 5px;
+        }
+        
+        /* Calendar and Upcoming */
+        .sidebar-card {
+            background-color: var(--white);
+            border-radius: 8px;
+            box-shadow: var(--shadow);
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        
+        .date-display {
+            text-align: center;
+            margin-bottom: 15px;
+        }
+        
+        .current-date {
+            font-size: 14px;
+            color: #666;
+        }
+        
+        .current-day {
+            font-size: 32px;
+            font-weight: 700;
+            color: var(--primary);
+        }
+        
+        .calendar {
+            margin-bottom: 20px;
+        }
+        
+        .calendar-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        
+        .calendar-title {
+            font-size: 16px;
+            font-weight: 600;
+        }
+        
+        .calendar-nav {
+            display: flex;
+        }
+        
+        .calendar-nav button {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            border: none;
+            background-color: var(--light-bg);
+            color: var(--dark-gray);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-left: 5px;
+            cursor: pointer;
+        }
+        
+        .calendar-weekdays {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            text-align: center;
+            font-size: 12px;
+            font-weight: 600;
+            color: #666;
+            margin-bottom: 10px;
+        }
+        
+        .calendar-days {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 5px;
+        }
+        
+        .calendar-day {
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 13px;
+            border-radius: 50%;
+            cursor: pointer;
+        }
+        
+        .calendar-day:hover {
+            background-color: var(--light-bg);
+        }
+        
+        .calendar-day.today {
+            background-color: var(--primary);
+            color: white;
+        }
+        
+        .calendar-day.has-event {
+            border: 2px solid var(--accent);
+        }
+        
+        /* Upcoming Events */
+        .upcoming-title {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 15px;
+        }
+        
+        .event-item {
+            display: flex;
+            align-items: flex-start;
+            margin-bottom: 15px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid var(--gray);
+        }
+        
+        .event-item:last-child {
+            margin-bottom: 0;
+            padding-bottom: 0;
+            border-bottom: none;
+        }
+        
+        .event-date {
+            width: 50px;
+            height: 50px;
+            background-color: var(--light-bg);
+            border-radius: 8px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            margin-right: 15px;
+        }
+        
+        .event-date .day {
+            font-size: 18px;
+            font-weight: 700;
+        }
+        
+        .event-date .month {
+            font-size: 12px;
+            color: #666;
+        }
+        
+        .event-info {
+            flex: 1;
+        }
+        
+        .event-name {
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+        
+        .event-details {
+            font-size: 12px;
+            color: #666;
+            display: flex;
+            align-items: center;
+        }
+        
+        .event-details i {
+            margin-right: 5px;
+        }
+        
+        /* Quick Access */
+        .quick-access {
+            margin-bottom: 30px;
+        }
+        
+        .quick-links {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+            gap: 15px;
+        }
+        
+        .quick-link {
+            background-color: var(--white);
+            border-radius: 8px;
+            box-shadow: var(--shadow);
+            padding: 15px;
+            text-align: center;
+            text-decoration: none;
+            color: var(--dark-gray);
+            transition: all 0.3s;
+        }
+        
+        .quick-link:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        
+        .quick-link i {
+            font-size: 24px;
+            color: var(--primary);
+            margin-bottom: 10px;
+        }
+        
+        .quick-link span {
+            font-size: 13px;
+            font-weight: 500;
+        }
+        
+        /* Assignments Due Soon */
+        .assignments {
+            margin-bottom: 30px;
+        }
+        
+        .assignment-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 15px;
+        }
+        
+        .assignment-card {
+            background-color: var(--white);
+            border-radius: 8px;
+            box-shadow: var(--shadow);
+            padding: 20px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .assignment-subject {
+            font-size: 12px;
+            color: var(--primary);
+            font-weight: 600;
+            text-transform: uppercase;
+            margin-bottom: 5px;
+        }
+        
+        .assignment-title {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+        
+        .assignment-details {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 15px;
+        }
+        
+        .assignment-info {
+            font-size: 12px;
+            display: flex;
+            align-items: center;
+            color: #666;
+        }
+        
+        .assignment-info i {
+            margin-right: 5px;
+        }
+        
+        .assignment-progress {
+            margin-bottom: 10px;
+        }
+        
+        .progress-bar {
+            height: 6px;
+            background-color: var(--gray);
+            border-radius: 3px;
+            overflow: hidden;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background-color: var(--secondary);
+        }
+        
+        .assignment-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .days-left {
+            font-size: 12px;
+            color: var(--error);
+            font-weight: 500;
+        }
+        
+        .assignment-points {
+            font-size: 12px;
+            font-weight: 600;
+            padding: 4px 8px;
+            background-color: rgba(46, 204, 113, 0.1);
+            color: var(--secondary);
+            border-radius: 20px;
+        }
+        
+        /* Responsive */
+        @media (max-width: 992px) {
+            .sidebar {
+                width: 80px;
+            }
+            
+            .sidebar-logo {
+                padding: 0 10px 20px;
+            }
+            
+            .sidebar-menu a span {
+                display: none;
+            }
+            
+            .sidebar-menu a {
+                justify-content: center;
+                padding: 15px 0;
+            }
+            
+            .sidebar-menu i {
+                margin-right: 0;
+                font-size: 20px;
+            }
+            
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .header-search {
+                display: none;
+            }
+            
+            .welcome-banner p {
+                max-width: 100%;
+            }
+            
+            .assignment-list {
+                grid-template-columns: 1fr;
+            }
+            
+            .quick-links {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+        
+        @media (max-width: 576px) {
+            .quick-links {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+        
+        /* Button */
+        .btn {
+            padding: 8px 15px;
+            border-radius: 4px;
+            border: none;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: inline-flex;
+            align-items: center;
+        }
+        
+        .btn i {
+            margin-right: 5px;
+        }
+        
+        .btn-primary {
+            background-color: var(--primary);
+            color: var(--white);
+        }
+        
+        .btn-primary:hover {
+            background-color: var(--primary-dark);
+        }
+    </style>
+    <!-- Font Awesome CDN -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&family=Open+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="layout">
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <div class="sidebar-logo">
+                <img src="/api/placeholder/150/50" alt="YouCode Logo">
+            </div>
+            <ul class="sidebar-menu">
+                <li><a href="#" class="active"><i class="fas fa-home"></i> <span>Accueil</span></a></li>
+                <li><a href="#"><i class="fas fa-book"></i> <span>Mes Devoirs</span></a></li>
+                <li><a href="#"><i class="fas fa-coins"></i> <span>Mes Points</span></a></li>
+                <li><a href="#"><i class="fas fa-gift"></i> <span>Cadeaux</span></a></li>
+                <li><a href="#"><i class="fas fa-bullhorn"></i> <span>Annonces</span></a></li>
+                <li><a href="#"><i class="fas fa-calendar"></i> <span>Calendrier</span></a></li>
+                <li><a href="#"><i class="fas fa-user"></i> <span>Mon Profil</span></a></li>
+                <li><a href="#"><i class="fas fa-cog"></i> <span>Paramètres</span></a></li>
+            </ul>
+        </div>
+        
+        <!-- Main Content -->
+        <div class="main">
+            <!-- Header -->
+            <div class="header">
+                <div class="header-search">
+                    <i class="fas fa-search"></i>
+                    <input type="text" placeholder="Rechercher...">
+                </div>
+                <div class="header-right">
+                    <div class="notif">
+                        <i class="fas fa-bell"></i>
+                        <span class="badge">3</span>
+                    </div>
+                    <div class="user-profile">
+                        <img src="/api/placeholder/35/35" alt="Avatar">
+                        <span>Mohammed Alami</span>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Content -->
+            <div class="content">
+                <!-- Welcome Banner -->
+                <div class="welcome-banner">
+                    <h1>Bienvenue, Mohammed! 👋</h1>
+                    <p>Vous avez 3 devoirs à rendre cette semaine et 850 points à échanger contre des cadeaux.</p>
+                    <button class="btn">Voir mes devoirs <i class="fas fa-arrow-right"></i></button>
+                </div>
+                
+                <!-- Dashboard Grid -->
+                <div class="dashboard-grid">
+                    <!-- Main Column -->
+                    <div class="main-column">
+                        <!-- Quick Access -->
+                        <div class="quick-access">
+                            <div class="section-title">
+                                <h2>Accès rapide</h2>
+                            </div>
+                            <div class="quick-links">
+                                <a href="#" class="quick-link">
+                                    <i class="fas fa-file-alt"></i>
+                                    <span>Rendre un devoir</span>
+                                </a>
+                                <a href="#" class="quick-link">
+                                    <i class="fas fa-gift"></i>
+                                    <span>Boutique cadeaux</span>
+                                </a>
+                                <a href="#" class="quick-link">
+                                    <i class="fas fa-users"></i>
+                                    <span>Ma classe</span>
+                                </a>
+                                <a href="#" class="quick-link">
+                                    <i class="fas fa-coins"></i>
+                                    <span>Mes points</span>
+                                </a>
+                                <a href="#" class="quick-link">
+                                    <i class="fas fa-bullhorn"></i>
+                                    <span>Annonces</span>
+                                </a>
+                            </div>
+                        </div>
+                        
+                        <!-- Assignments Due Soon -->
+                        <div class="assignments">
+                            <div class="section-title">
+                                <h2>Devoirs à rendre</h2>
+                                <a href="#">Voir tout</a>
+                            </div>
+                            <div class="assignment-list">
+                                <div class="assignment-card">
+                                    <div class="assignment-subject">Développement Web</div>
+                                    <div class="assignment-title">Projet PHP MVC</div>
+                                    <div class="assignment-details">
+                                        <div class="assignment-info">
+                                            <i class="fas fa-user"></i> Prof. Samira Benali
+                                        </div>
+                                        <div class="assignment-info">
+                                            <i class="fas fa-users"></i> Groupe A1
+                                        </div>
+                                    </div>
+                                    <div class="assignment-progress">
+                                        <div class="progress-bar">
+                                            <div class="progress-fill" style="width: 70%;"></div>
+                                        </div>
+                                    </div>
+                                    <div class="assignment-footer">
+                                        <div class="days-left">
+                                            <i class="fas fa-clock"></i> 3 jours restants
+                                        </div>
+                                        <div class="assignment-points">
+                                            <i class="fas fa-coins"></i> 100 points
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="assignment-card">
+                                    <div class="assignment-subject">Base de Données</div>
+                                    <div class="assignment-title">Conception DB MySql</div>
+                                    <div class="assignment-details">
+                                        <div class="assignment-info">
+                                            <i class="fas fa-user"></i> Prof. Ahmed Hassan
+                                        </div>
+                                        <div class="assignment-info">
+                                            <i class="fas fa-users"></i> Groupe A1
+                                        </div>
+                                    </div>
+                                    <div class="assignment-progress">
+                                        <div class="progress-bar">
+                                            <div class="progress-fill" style="width: 25%;"></div>
+                                        </div>
+                                    </div>
+                                    <div class="assignment-footer">
+                                        <div class="days-left">
+                                            <i class="fas fa-clock"></i> 2 jours restants
+                                        </div>
+                                        <div class="assignment-points">
+                                            <i class="fas fa-coins"></i> 50 points
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="assignment-card">
+                                    <div class="assignment-subject">Front-End</div>
+                                    <div class="assignment-title">TP Vue.js Components</div>
+                                    <div class="assignment-details">
+                                        <div class="assignment-info">
+                                            <i class="fas fa-user"></i> Prof. Rachid Mouhsine
+                                        </div>
+                                        <div class="assignment-info">
+                                            <i class="fas fa-users"></i> Tous les groupes
+                                        </div>
+                                    </div>
+                                    <div class="assignment-progress">
+                                        <div class="progress-bar">
+                                            <div class="progress-fill" style="width: 40%;"></div>
+                                        </div>
+                                    </div>
+                                    <div class="assignment-footer">
+                                        <div class="days-left">
+                                            <i class="fas fa-clock"></i> 5 jours restants
+                                        </div>
+                                        <div class="assignment-points">
+                                            <i class="fas fa-coins"></i> 75 points
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Announcements -->
+                        <div class="announcements">
+                            <div class="section-title">
+                                <h2>Annonces récentes</h2>
+                                <a href="#">Voir tout</a>
+                            </div>
+                            
+                            <div class="announcement-card">
+                                <div class="announcement-header">
+                                    <img src="/api/placeholder/40/40" alt="Admin">
+                                    <div>
+                                        <div class="announcement-author">Admin YouCode</div>
+                                        <div class="announcement-date">Aujourd'hui, 10:30</div>
+                                    </div>
+                                </div>
+                                <div class="announcement-title">Modification du planning des cours</div>
+                                <div class="announcement-content">
+                                    Suite à une réunion avec l'équipe pédagogique, nous avons modifié le planning des cours pour la semaine prochaine. Veuillez consulter le nouveau planning dans la section Calendrier.
+                                </div>
+                                <div class="announcement-footer">
+                                    <div class="target">
+                                        <i class="fas fa-users"></i> Tous les étudiants
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="announcement-card">
+                                <div class="announcement-header">
+                                    <img src="/api/placeholder/40/40" alt="Teacher">
+                                    <div>
+                                        <div class="announcement-author">Prof. Samira Benali</div>
+                                        <div class="announcement-date">Hier, 16:45</div>
+                                    </div>
+                                </div>
+                                <div class="announcement-title">Ressources additionnelles pour PHP MVC</div>
+                                <div class="announcement-content">
+                                    J'ai ajouté des ressources supplémentaires pour vous aider avec le projet PHP MVC. Vous trouverez des exemples pratiques et une documentation détaillée dans la section des devoirs.
+                                </div>
+                                <div class="announcement-footer">
+                                    <div class="target">
+                                        <i class="fas fa-users"></i> Groupe A1
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Sidebar Column -->
+                    <div class="sidebar-column">
+                        <!-- Calendar Card -->
+                        <div class="sidebar-card">
+                            <div class="date-display">
+                                <div class="current-date">Février 2025</div>
+                                <div class="current-day">25</div>
+                                <div class="current-date">Mardi</div>
+                            </div>
+                            
+                            <div class="calendar">
+                                <div class="calendar-header">
+                                    <div class="calendar-title">Février 2025</div>
+                                    <div class="calendar-nav">
+                                        <button><i class="fas fa-chevron-left"></i></button>
+                                        <button><i class="fas fa-chevron-right"></i></button>
+                                    </div>
+                                </div>
+                                
+                                <div class="calendar-weekdays">
+                                    <div>Lu</div>
+                                    <div>Ma</div>
+                                    <div>Me</div>
+                                    <div>Je</div>
+                                    <div>Ve</div>
+                                    <div>Sa</div>
+                                    <div>Di</div>
+                                </div>
+                                
+                                <div class="calendar-days">
+                                    <div class="calendar-day">27</div>
+                                    <div class="calendar-day">28</div>
+                                    <div class="calendar-day">29</div>
+                                    <div class="calendar-day">30</div>
+                                    <div class="calendar-day">31</div>
+                                    <div class="calendar-day">1</div>
+                                    <div class="calendar-day">2</div>
+                                    <div class="calendar-day">3</div>
+                                    <div class="calendar-day">4</div>
+                                    <div class="calendar-day">5</div>
+                                    <div class="calendar-day">6</div>
+                                    <div class="calendar-day">7</div>
+                                    <div class="calendar-day">8</div>
+                                    <div class="calendar-day">9</div>
+                                    <div class="calendar-day">10</div>
+                                    <div class="
+                                    

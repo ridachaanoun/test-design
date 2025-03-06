@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>YouCode Intranet - Home</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              primary: "#2C3E50",  /* Dark blue-gray */
+              secondary: "#E74C3C", /* Vibrant red */
+              accent: "#18BC9C"     /* Turquoise */
+            }
+          }
+        }
+      }
+    </script>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body class="bg-gray-50">
+    <!-- Top Navigation Bar -->
+    <div id="header" class="app-header app-header-inverse fixed w-full z-10 bg-primary">
+      <div class="max-w-7xl mx-auto">
+        <div class="flex justify-between items-center h-16 px-4">
+          <!-- Left: Logo and Brand -->
+          <div class="navbar-header flex items-center space-x-4">
+            <a href="/" class="navbar-brand flex items-center space-x-2">
+              <img src="/src/img/logo-white.png" alt="Logo" class="h-8">
+              <small class="text-white text-xs font-bold">INTRANET</small>
+            </a>
+            <button type="button" class="navbar-mobile-toggler md:hidden">
+              <span class="block w-6 h-0.5 bg-white mb-1"></span>
+              <span class="block w-6 h-0.5 bg-white mb-1"></span>
+              <span class="block w-6 h-0.5 bg-white"></span>
+            </button>
+          </div>
+
+          <!-- Right: Search, Date/Time, Notifications, User -->
+          <div class="navbar-nav flex items-center space-x-6">
+            <!-- Search -->
+            <div class="navbar-item navbar-form">
+              <form action="/network" method="GET" name="search">
+                <div class="relative">
+                  <input
+                    type="text"
+                    name="keyword"
+                    placeholder="Enter keyword"
+                    disabled
+                    class="w-64 pl-4 pr-10 py-2 rounded-lg bg-white/10 text-white border-none focus:ring-2 focus:ring-accent"
+                  />
+                  <button type="submit" class="absolute right-3 top-2.5 text-white">
+                    <i class="fa fa-search"></i>
+                  </button>
+                </div>
+              </form>
+            </div>
+
+            <!-- Current Date and Time -->
+            <div class="hidden md:block text-white text-sm">
+              <span id="current-datetime">2025-03-05 14:13:38</span>
+            </div>
+
+            <!-- Notifications -->
+            <div class="navbar-item dropdown">
+              <a href="#" data-bs-toggle="dropdown" class="navbar-link dropdown-toggle icon text-white">
+                <i class="fa fa-bell text-xl"></i>
+              </a>
+            </div>
+
+            <!-- User Profile -->
+            <div class="navbar-item navbar-user dropdown group">
+              <a href="#" class="navbar-link dropdown-toggle flex items-center space-x-3">
+                <img
+                  src="https://ui-avatars.com/api/?name=Rida+Chaanoun"
+                  alt="Rida Chaanoun"
+                  class="w-8 h-8 rounded-full border-2 border-white"
+                />
+                <span class="text-white font-medium hidden md:inline">Rida Chaanoun</span>
+                <i class="fa fa-chevron-down text-white text-xs"></i>
+              </a>
+              <div class="dropdown-menu dropdown-menu-end me-1 hidden group-hover:block absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg py-2">
+                <a href="/profile#settings" class="dropdown-item block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                  Edit Profile
+                </a>
+                <a href="#" class="dropdown-item block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 flex justify-between items-center">
+                  Inbox
+                  <span class="badge bg-danger rounded-pill text-white text-xs px-2">0</span>
+                </a>
+                <a href="#" class="dropdown-item block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Calendar</a>
+                <a href="#" class="dropdown-item block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Setting</a>
+                <div class="dropdown-divider border-t my-2"></div>
+                <a href="javascript: $('form#logout').submit();" class="dropdown-item block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                  Log Out
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="flex pt-20">
+      <!-- Sidebar -->
+      <aside class="w-64 bg-white h-screen fixed shadow-sm border-r border-gray-200">
+        <div class="p-4">
+          <div class="flex items-center space-x-3 mb-6">
+            <img
+              src="https://ui-avatars.com/api/?name=Rida+Chaanoun"
+              alt="Profile"
+              class="w-12 h-12 rounded-full"
+            />
+            <div>
+              <h3 class="font-medium text-primary">Rida Chaanoun</h3>
+              <p class="text-sm text-gray-500">@ridachaanoun</p>
+            </div>
+          </div>
+          <div class="space-y-1">
+            <h4 class="text-sm font-medium text-gray-500 mb-2">Navigation</h4>
+            <a href="#" class="flex items-center space-x-3 p-3 rounded-lg bg-secondary bg-opacity-20 text-secondary">
+              <i class="fas fa-home w-5 h-5"></i>
+              <span>Home</span>
+            </a>
+            <a href="#" class="flex items-center space-x-3 p-3 rounded-lg hover:bg-gray-100">
+              <i class="fas fa-users w-5 h-5"></i>
+              <span>Network</span>
+            </a>
+            <a href="#" class="flex items-center space-x-3 p-3 rounded-lg hover:bg-gray-100">
+              <i class="fas fa-chalkboard w-5 h-5"></i>
+              <span>Classrooms</span>
+            </a>
+            <a href="#" class="flex items-center space-x-3 p-3 rounded-lg hover:bg-gray-100">
+              <i class="fas fa-bus w-5 h-5"></i>
+              <span>Transport Booking</span>
+            </a>
+            <a href="#" class="flex items-center space-x-3 p-3 rounded-lg hover:bg-gray-100">
+              <i class="fas fa-store w-5 h-5"></i>
+              <span>Marketplace</span>
+              <span class="text-xs bg-secondary bg-opacity-20 text-secondary px-2 rounded-full">Nouveau</span>
+            </a>
+            <a href="#" class="flex items-center space-x-3 p-3 rounded-lg hover:bg-gray-100">
+              <i class="fas fa-user w-5 h-5"></i>
+              <span>Profile</span>
+            </a>
+          </div>
+        </div>
+      </aside>
+
+      <!-- Main Content Area -->
+      <main class="ml-64 p-8 w-full">
+        <h1 class="text-2xl font-bold text-primary mb-8">👋 Welcome back Rida!</h1>
+
+        <!-- Today's Schedule Section -->
+        <div class="bg-white rounded-lg shadow-sm mb-8">
+          <div class="bg-primary text-white p-4 rounded-t-lg">
+            <h4 class="text-lg font-semibold">Today's Schedule</h4>
+          </div>
+          <div class="p-4">
+            <div class="flex items-center justify-between mb-4">
+              <h2 class="text-xl font-bold">March <span class="text-lg">2025</span></h2>
+              <div class="text-sm text-gray-500">Wednesday, March 5</div>
+            </div>
+            <div class="border-t pt-4">
+              <p class="text-center text-gray-500">No events scheduled for today</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- BDE Members & Classroom Delegates Sections -->
+        <section class="grid grid-cols-1 lg:grid-cols-2 gap-8 mt-8">
+          <!-- BDE Members Section -->
+          <div class="bg-white rounded-lg shadow-sm p-6">
+            <h2 class="text-lg font-semibold mb-4">BDE Members</h2>
+            <p class="text-sm text-gray-500 mb-4">17 learners</p>
+            <div class="space-y-4">
+              <div class="flex items-center space-x-4">
+                <img src="https://ui-avatars.com/api/?name=Imadeddine+Saghir" alt="Imadeddine Saghir" class="w-12 h-12 rounded-full border" />
+                <div>
+                  <p class="font-medium text-primary">Imadeddine Saghir</p>
+                  <p class="text-sm text-gray-500">Safi</p>
+                </div>
+              </div>
+              <div class="flex items-center space-x-4">
+                <img src="https://ui-avatars.com/api/?name=Otman+Kharbouch" alt="Otman Kharbouch" class="w-12 h-12 rounded-full border" />
+                <div>
+                  <p class="font-medium text-primary">Otman Kharbouch</p>
+                  <p class="text-sm text-gray-500">Youssoufia</p>
+                </div>
+              </div>
+              <div class="flex items-center space-x-4">
+                <img src="https://ui-avatars.com/api/?name=Zaid+Moumni" alt="Zaid Moumni" class="w-12 h-12 rounded-full border" />
+                <div>
+                  <p class="font-medium text-primary">Zaid Moumni</p>
+                  <p class="text-sm text-gray-500">Youssoufia</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Classroom Delegates Section -->
+          <div class="bg-white rounded-lg shadow-sm p-6">
+            <h2 class="text-lg font-semibold mb-4">Classroom Delegates</h2>
+            <p class="text-sm text-gray-500 mb-4">19 learners</p>
+            <div class="space-y-4">
+              <div class="flex items-center space-x-4">
+                <img src="https://ui-avatars.com/api/?name=Abdeljalil+El+Filaly" alt="Abdeljalil El Filaly" class="w-12 h-12 rounded-full border" />
+                <div>
+                  <p class="font-medium text-primary">Abdeljalil El Filaly</p>
+                  <p class="text-sm text-gray-500">2ème Année, Youssoufia</p>
+                </div>
+              </div>
+              <div class="flex items-center space-x-4">
+                <img src="https://ui-avatars.com/api/?name=Amine+Naboulsi" alt="Amine Naboulsi" class="w-12 h-12 rounded-full border" />
+                <div>
+                  <p class="font-medium text-primary">Amine Naboulsi</p>
+                  <p class="text-sm text-gray-500">1ère Année, Youssoufia</p>
+                </div>
+              </div>
+              <div class="flex items-center space-x-4">
+                <img src="https://ui-avatars.com/api/?name=Ismail+Dilali" alt="Ismail Dilali" class="w-12 h-12 rounded-full border" />
+                <div>
+                  <p class="font-medium text-primary">Ismail Dilali</p>
+                  <p class="text-sm text-gray-500">1ère Année, Youssoufia</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <!-- Hidden logout form -->
+    <form method="POST" action="https://intranet.youcode.ma:443/logout" id="logout" class="hidden">
+      <input type="hidden" name="_token" value="cqJJMstC2dkNxcRchq5k9M2ytquUj9LnuElncUmo">
+    </form>
+
+    <!-- Optional JavaScript for datetime update -->
+    <script>
+      function updateDateTime() {
+        const element = document.getElementById('current-datetime');
+        const now = new Date();
+        const formatted = now.toISOString().slice(0, 19).replace('T', ' ');
+        element.textContent = formatted;
+      }
+      
+      // Update every second
+      setInterval(updateDateTime, 1000);
+      // Initial update
+      updateDateTime();
+    </script>
+  </body>
+</html>

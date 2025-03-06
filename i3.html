@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>YouCode Intranet</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <script>
+        tailwind.config = {
+          theme: {
+            extend: {
+              colors: {
+                primary: {
+                  DEFAULT: "#2C3E50",
+                  dark: "#1C2833"
+                },
+                secondary: "#E74C3C",
+                accent: "#18BC9C",
+                background: "#1A2531"
+              }
+            }
+          }
+        }
+      </script>
+    <style>
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #2C3E50;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #18BC9C;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body 
+    x-data="{ 
+        sidebarOpen: true,
+        searchQuery: '',
+        notifications: [],
+        toggleSidebar() { this.sidebarOpen = !this.sidebarOpen }
+    }" 
+    class="bg-background text-white min-h-screen flex"
+>
+    <!-- Top Navigation -->
+    <nav class="fixed top-0 left-0 right-0 bg-primary-dark shadow-lg z-50 px-6 py-3 flex justify-between items-center">
+        <div class="flex items-center space-x-4">
+            <img src="https://ui-avatars.com/api/?name=YouCode&background=18BC9C&color=fff" class="h-8 w-8 rounded">
+            <span class="text-white font-bold tracking-wider">INTRANET</span>
+        </div>
+        
+        <div class="flex items-center space-x-4">
+            <!-- Search -->
+            <div class="relative">
+                <input 
+                    x-model="searchQuery"
+                    type="text" 
+                    placeholder="Search..." 
+                    class="bg-primary rounded-full px-4 py-2 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-accent"
+                >
+                <button class="absolute right-3 top-3 text-gray-400">
+                    <i class="fas fa-search"></i>
+                </button>
+            </div>
+
+            <!-- Notifications -->
+            <div class="relative" x-data="{ notificationOpen: false }">
+                <button 
+                    @click="notificationOpen = !notificationOpen"
+                    class="relative text-white hover:text-accent"
+                >
+                    <i class="fas fa-bell text-xl"></i>
+                    <span class="absolute -top-2 -right-2 bg-secondary text-white text-xs rounded-full w-4 h-4 flex items-center justify-center">
+                        0
+                    </span>
+                </button>
+            </div>
+
+            <!-- Profile -->
+            <div class="relative" x-data="{ profileOpen: false }">
+                <button 
+                    @click="profileOpen = !profileOpen"
+                    class="flex items-center space-x-2 text-white hover:text-accent"
+                >
+                    <img 
+                        src="https://ui-avatars.com/api/?name=Rida+Chaanoun&background=18BC9C&color=fff" 
+                        class="w-8 h-8 rounded-full border-2 border-accent"
+                    >
+                    <span class="font-medium">Rida Chaanoun</span>
+                    <i class="fas fa-chevron-down text-xs"></i>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Sidebar -->
+    <div 
+        :class="sidebarOpen ? 'w-64' : 'w-20'" 
+        class="fixed top-16 bottom-0 bg-primary-dark transition-all duration-300 z-40 overflow-y-auto"
+    >
+        <div class="p-4 flex items-center space-x-3 mb-4">
+            <img 
+                src="https://ui-avatars.com/api/?name=Rida+Chaanoun&background=18BC9C&color=fff" 
+                class="w-12 h-12 rounded-full border-2 border-accent"
+            >
+            <div x-show="sidebarOpen">
+                <h3 class="font-medium text-white">Rida Chaanoun</h3>
+                <p class="text-sm text-gray-400">@ridachaanoun</p>
+            </div>
+        </div>
+        
+        <nav class="space-y-1 px-2">
+            <a href="#" class="flex items-center p-3 rounded-lg text-white hover:bg-primary group">
+                <i class="fas fa-home w-6 text-center mr-3 group-hover:text-accent"></i>
+                <span x-show="sidebarOpen">Home</span>
+            </a>
+            <a href="#" class="flex items-center p-3 rounded-lg text-white hover:bg-primary group">
+                <i class="fas fa-users w-6 text-center mr-3 group-hover:text-accent"></i>
+                <span x-show="sidebarOpen">Network</span>
+            </a>
+            <a href="#" class="flex items-center p-3 rounded-lg text-white hover:bg-primary group">
+                <i class="fas fa-chalkboard w-6 text-center mr-3 group-hover:text-accent"></i>
+                <span x-show="sidebarOpen">Classrooms</span>
+            </a>
+            <a href="#" class="flex items-center p-3 rounded-lg text-white hover:bg-primary group">
+                <i class="fas fa-bus w-6 text-center mr-3 group-hover:text-accent"></i>
+                <span x-show="sidebarOpen">Transport Booking</span>
+            </a>
+            <a href="#" class="flex items-center p-3 rounded-lg text-white hover:bg-primary group relative">
+                <i class="fas fa-store w-6 text-center mr-3 group-hover:text-accent"></i>
+                <span x-show="sidebarOpen">Marketplace</span>
+                <span 
+                    x-show="sidebarOpen" 
+                    class="ml-2 bg-secondary text-xs px-2 py-0.5 rounded-full"
+                >
+                    New
+                </span>
+            </a>
+        </nav>
+    </div>
+
+    <!-- Main Content -->
+    <main class="ml-64 mt-14 p-8 w-full grid grid-cols-100 md:grid-cols-2 gap-8">
+        <!-- Column 1 -->
+        <div>
+          <!-- Hall of Fame -->
+          <section class="bg-primary rounded-lg shadow-sm overflow-hidden mb-8">
+            <div class="bg-primary-dark px-6 py-4">
+              <h4 class="text-lg font-semibold text-white">Hall of Fame</h4>
+            </div>
+            <hr class="border-gray-200 m-0">
+            <div class="divide-y divide-gray-100">
+              <!-- User 1 -->
+              <div class="p-4 flex items-center justify-between hover:bg-gray-50 transition-colors">
+                <div class="flex items-center space-x-4">
+                  <img src="/storage/users/profile/thumbnail/688-1684333435.JPG" 
+                       alt="Fidèle Yonli" 
+                       class="w-12 h-12 rounded-lg object-cover shadow-sm">
+                  <div>
+                    <h4 class="text-base font-medium text-gray-900">Fidèle Yonli</h4>
+                    <p class="text-sm text-gray-500">@fidèleyonli</p>
+                    <div class="text-sm text-gray-600 flex items-center mt-1">
+                      <i class="fas fa-location-dot text-gray-400 mr-1"></i>
+                      Youssoufia
+                    </div>
+                  </div>
+                </div>
+                <div class="text-2xl font-extrabold text-amber-500">1068 YC</div>
+              </div>
+              <!-- User 2 -->
+              <div class="p-4 flex items-center justify-between hover:bg-gray-50 transition-colors">
+                <div class="flex items-center space-x-4">
+                  <img src="/storage/users/profile/thumbnail/684-1684333509.JPG" 
+                       alt="Omar Dbaa" 
+                       class="w-12 h-12 rounded-lg object-cover shadow-sm">
+                  <div>
+                    <h4 class="text-base font-medium text-gray-900">Omar Dbaa</h4>
+                    <p class="text-sm text-gray-500">@omardbaa</p>
+                    <div class="text-sm text-gray-600 flex items-center mt-1">
+                      <i class="fas fa-location-dot text-gray-400 mr-1"></i>
+                      Youssoufia
+                    </div>
+                  </div>
+                </div>
+                <div class="text-2xl font-extrabold text-amber-500">985 YC</div>
+              </div>
+              <!-- Additional Hall of Fame entries can be added similarly -->
+            </div>
+          </section>
+    
+          <!-- Classroom Delegates -->
+          <section class="bg-primary rounded-lg shadow-sm overflow-hidden">
+            <div class="bg-primary-dark px-6 py-4 flex justify-between items-center">
+              <h4 class="text-lg font-semibold text-white">Classroom Delegates</h4>
+              <span class="px-3 py-1 bg-yellow-400 text-primary text-sm font-medium rounded-full">19 learners</span>
+            </div>
+            <div class="p-6">
+              <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
+                <!-- Delegate 1 -->
+                <div class="flex flex-col items-center group">
+                  <a href="/profile/abdeljalilelfilaly" class="relative block mb-2">
+                    <img src="/storage/users/profile/thumbnail/911-1697015476.jpg" 
+                         alt="Abdeljalil El Filaly" 
+                         class="w-16 h-16 rounded-full object-cover shadow-sm group-hover:ring-2 group-hover:ring-accent transition-all">
+                    <div class="absolute -top-1 -right-1 bg-accent text-white text-xs px-2 py-0.5 rounded-full">A2</div>
+                  </a>
+                  <h4 class="text-sm font-medium text-gray-900 text-center truncate w-full max-w-[120px]">Abdeljalil El Filaly</h4>
+                  <div class="text-xs text-gray-500 flex items-center mt-1">
+                    <i class="fa fa-location-dot mr-1"></i>
+                    Youssoufia
+                  </div>
+                </div>
+                <!-- Delegate 2 -->
+                <div class="flex flex-col items-center group">
+                  <a href="/profile/AMINE NABOULSI" class="relative block mb-2">
+                    <img src="/storage/users/profile/thumbnail/1125-1727859974.JPG" 
+                         alt="Amine Naboulsi" 
+                         class="w-16 h-16 rounded-full object-cover shadow-sm group-hover:ring-2 group-hover:ring-accent transition-all">
+                    <div class="absolute -top-1 -right-1 bg-secondary text-white text-xs px-2 py-0.5 rounded-full">A1</div>
+                  </a>
+                  <h4 class="text-sm font-medium text-gray-900 text-center truncate w-full max-w-[120px]">Amine Naboulsi</h4>
+                  <div class="text-xs text-gray-500 flex items-center mt-1">
+                    <i class="fa fa-location-dot mr-1"></i>
+                    Youssoufia
+                  </div>
+                </div>
+                <!-- Additional delegates can be added following the same pattern -->
+              </div>
+            </div>
+            <div class="px-6 py-4 border-t border-gray-100 text-center">
+              <a href="/classrooms" class="text-white hover:text-accent transition-colors text-sm font-medium">
+                View All Classrooms <i class="fas fa-arrow-right ml-1"></i>
+              </a>
+            </div>
+          </section>
+        </div>
+    
+        <!-- Column 2 -->
+        <div>
+          <!-- BDE Members -->
+          <section class="bg-primary rounded-lg shadow-sm overflow-hidden">
+            <div class="bg-primary-dark px-6 py-4 flex justify-between items-center">
+              <h4 class="text-lg font-semibold text-white">BDE Members</h4>
+              <span class="px-3 py-1 bg-yellow-400 text-primary text-sm font-medium rounded-full">17 learners</span>
+            </div>
+            <div class="p-6">
+              <div class="grid grid-cols-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
+                <!-- Member 1 -->
+                <div class="flex flex-col items-center">
+                  <a href="/profile/imadeddinesaghir" class="block mb-2">
+                    <img src="/storage/users/profile/thumbnail/818-1696615590.jpg" 
+                         alt="Imadeddine Saghir" 
+                         class="w-16 h-16 rounded-full object-cover shadow-sm hover:ring-2 hover:ring-accent transition-all">
+                  </a>
+                  <h4 class="text-sm font-medium text-gray-900 text-center truncate w-full">Imadeddine Saghir</h4>
+                  <div class="text-xs text-gray-500 flex items-center mt-1">
+                    <i class="fa fa-location-dot mr-1"></i>
+                    Safi
+                  </div>
+                </div>
+                <!-- Member 2 -->
+                <div class="flex flex-col items-center">
+                  <a href="/profile/otmankharbouch" class="block mb-2">
+                    <img src="/storage/users/profile/thumbnail/871-1731789442.png" 
+                         alt="Otman Kharbouch" 
+                         class="w-16 h-16 rounded-full object-cover shadow-sm hover:ring-2 hover:ring-accent transition-all">
+                  </a>
+                  <h4 class="text-sm font-medium text-gray-900 text-center truncate w-full">Otman Kharbouch</h4>
+                  <div class="text-xs text-gray-500 flex items-center mt-1">
+                    <i class="fa fa-location-dot mr-1"></i>
+                    Youssoufia
+                  </div>
+                </div>
+                <!-- Member 3 -->
+                <div class="flex flex-col items-center">
+                  <a href="/profile/zaidmoumni" class="block mb-2">
+                    <img src="/storage/users/profile/thumbnail/928-1697015960.jpg" 
+                         alt="Zaid Moumni" 
+                         class="w-16 h-16 rounded-full object-cover shadow-sm hover:ring-2 hover:ring-accent transition-all">
+                  </a>
+                  <h4 class="text-sm font-medium text-gray-900 text-center truncate w-full">Zaid Moumni</h4>
+                  <div class="text-xs text-gray-500 flex items-center mt-1">
+                    <i class="fa fa-location-dot mr-1"></i>
+                    Youssoufia
+                  </div>
+                </div>
+                <!-- Member 4 (Using external CDN-based placeholder image) -->
+                <div class="flex flex-col items-center">
+                  <a href="/profile/janedoe" class="block mb-2">
+                    <img src="https://picsum.photos/seed/jane/80" 
+                         alt="Jane Doe" 
+                         class="w-16 h-16 rounded-full object-cover shadow-sm hover:ring-2 hover:ring-accent transition-all">
+                  </a>
+                  <h4 class="text-sm font-medium text-gray-900 text-center truncate w-full">Jane Doe</h4>
+                  <div class="text-xs text-gray-500 flex items-center mt-1">
+                    <i class="fa fa-location-dot mr-1"></i>
+                    New York
+                  </div>
+                </div>
+                <!-- Member 5 (Using external CDN-based placeholder image) -->
+                <div class="flex flex-col items-center">
+                  <a href="/profile/johndoe" class="block mb-2">
+                    <img src="https://picsum.photos/seed/john/80" 
+                         alt="John Doe" 
+                         class="w-16 h-16 rounded-full object-cover shadow-sm hover:ring-2 hover:ring-accent transition-all">
+                  </a>
+                  <h4 class="text-sm font-medium text-gray-900 text-center truncate w-full">John Doe</h4>
+                  <div class="text-xs text-gray-500 flex items-center mt-1">
+                    <i class="fa fa-location-dot mr-1"></i>
+                    Los Angeles
+                  </div>
+                </div>
+                <!-- Member 6 (Using external CDN-based placeholder image) -->
+                <div class="flex flex-col items-center">
+                  <a href="/profile/samsmith" class="block mb-2">
+                    <img src="https://picsum.photos/seed/sam/80" 
+                         alt="Sam Smith" 
+                         class="w-16 h-16 rounded-full object-cover shadow-sm hover:ring-2 hover:ring-accent transition-all">
+                  </a>
+                  <h4 class="text-sm font-medium text-gray-900 text-center truncate w-full">Sam Smith</h4>
+                  <div class="text-xs text-gray-500 flex items-center mt-1">
+                    <i class="fa fa-location-dot mr-1"></i>
+                    London
+                  </div>
+                </div>
+                <!-- Member 7 (Using external CDN-based placeholder image) -->
+                <div class="flex flex-col items-center">
+                  <a href="/profile/alexdoe" class="block mb-2">
+                    <img src="https://picsum.photos/seed/alex/80" 
+                         alt="Alex Doe" 
+                         class="w-16 h-16 rounded-full object-cover shadow-sm hover:ring-2 hover:ring-accent transition-all">
+                  </a>
+                  <h4 class="text-sm font-medium text-gray-900 text-center truncate w-full">Alex Doe</h4>
+                  <div class="text-xs text-gray-500 flex items-center mt-1">
+                    <i class="fa fa-location-dot mr-1"></i>
+                    Toronto
+                  </div>
+                </div>
+                <!-- Additional members can be added similarly -->
+              </div>
+            </div>
+          </section>
+        </div>
+      </main>
+</body>
+</html>
