@@ -1,0 +1,960 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>YouCode Intranet</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <!-- Alpine.js -->
+    <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <!-- Tailwind Configuration -->
+    <script>
+tailwind.config = {
+    theme: {
+        extend: {
+            colors: {
+                primary: {
+                    50: '#eeeaff',
+                    100: '#d1c6ff',
+                    200: '#b49dff',
+                    300: '#9775ff',
+                    400: '#7a4dff',
+                    500: '#6224ff',
+                    600: '#5511ff',
+                    700: '#4400e6',
+                    800: '#3600b3',
+                    900: '#280080'
+                },
+                secondary: {
+                    50: '#fff2ec',
+                    100: '#ffdfd0',
+                    200: '#ffc1a8',
+                    300: '#ff9c7a',
+                    400: '#ff774c',
+                    500: '#ff5c2b',
+                    600: '#ff3c00',
+                    700: '#cc3000',
+                    800: '#992400',
+                    900: '#661800'
+                },
+                accent: {
+                    50: '#dafff8',
+                    100: '#b0fff0',
+                    200: '#79ffe4',
+                    300: '#33ffd4',
+                    400: '#00f0c0',
+                    500: '#00d8ab',
+                    600: '#00bf96',
+                    700: '#00a683',
+                    800: '#00805f',
+                    900: '#00664d'
+                },
+                background: {
+                    DEFAULT: '#0a0823',
+                    card: '#13113a',
+                    light: '#1e1a54',
+                    dark: '#06051a',
+                    element: '#252168'
+                },
+                surface: {
+                    DEFAULT: '#13113a',
+                    hover: '#252168',
+                    active: '#322c80',
+                    muted: '#0c0b29'
+                },
+                text: {
+                    primary: '#f5f3ff',
+                    secondary: '#d7d3ff',
+                    muted: '#9d96d3',
+                    dark: '#5f598c'
+                }
+            },
+            fontFamily: {
+                sans: ['Inter', 'ui-sans-serif', 'system-ui']
+            },
+            boxShadow: {
+                'soft': '0 4px 6px -1px rgba(0, 0, 0, 0.2), 0 2px 4px -1px rgba(0, 0, 0, 0.1)',
+                'card': '0 8px 15px -3px rgba(0, 0, 0, 0.4), 0 4px 6px -2px rgba(0, 0, 0, 0.2)',
+                'glow': '0 0 15px rgba(120, 77, 255, 0.3)',
+                'accent-glow': '0 0 12px rgba(0, 240, 192, 0.4)'
+            },
+            screens: {
+                'xs': '480px'
+            },
+            backgroundImage: {
+                'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
+                'gradient-subtle': 'linear-gradient(to bottom right, var(--tw-gradient-stops))'
+            }
+        }
+    }
+}
+    </script>
+    <!-- Custom Styles -->
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+        
+        /* Base styles */
+        body {
+            font-family: 'Inter', sans-serif;
+            overflow-x: hidden;
+            background-image: radial-gradient(circle at top right, #121f45 0%, #0a1232 30%, #050a1a 100%);
+            background-attachment: fixed;
+        }
+        
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        
+        ::-webkit-scrollbar-track {
+            background: #0d1638;
+            border-radius: 3px;
+        }
+        
+        ::-webkit-scrollbar-thumb {
+            background: #00e68c;
+            border-radius: 3px;
+        }
+        
+        ::-webkit-scrollbar-thumb:hover {
+            background: #20ffa9;
+        }
+        
+        /* Card hover effect */
+        .card-hover {
+            transition: all 0.3s ease;
+        }
+        
+        .card-hover:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px -5px rgba(0, 0, 0, 0.5);
+        }
+        
+        /* Glow effect for active elements */
+        .glow-on-hover:hover {
+            box-shadow: 0 0 12px rgba(0, 230, 140, 0.4);
+        }
+        
+        /* Focus states for accessibility */
+        a:focus, button:focus, input:focus {
+            outline: 2px solid rgba(32, 255, 169, 0.5);
+            outline-offset: 2px;
+        }
+
+        /* Hide elements with x-cloak until Alpine initializes */
+        [x-cloak] {
+            display: none !important;
+        }
+        
+        /* Glass effect for certain elements */
+        .glass-effect {
+            background: rgba(18, 31, 69, 0.7);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(31, 49, 99, 0.3);
+        }
+    </style>
+</head>
+<body 
+// Update the Alpine.js data section with a dynamic date function
+x-data="{ 
+    sidebarOpen: window.innerWidth > 768,
+    searchQuery: '',
+    notifications: [],
+    notificationOpen: false,
+    profileMenuOpen: false,
+    isMobile: window.innerWidth < 768,
+    currentUser: 'ridachaanoun',
+    currentDateTime: '',
+    init() {
+        this.updateDateTime();
+        // Update time every second
+        setInterval(() => this.updateDateTime(), 1000);
+        
+        window.addEventListener('resize', () => {
+            this.isMobile = window.innerWidth < 768;
+            if (window.innerWidth < 768) {
+                this.sidebarOpen = false;
+            }
+        });
+    },
+    updateDateTime() {
+        const now = new Date();
+        // Format as YYYY-MM-DD HH:MM:SS (UTC)
+        this.currentDateTime = now.getUTCFullYear() + '-' + 
+                        String(now.getUTCMonth() + 1).padStart(2, '0') + '-' +
+                        String(now.getUTCDate()).padStart(2, '0') + ' ' +
+                        String(now.getUTCHours()).padStart(2, '0') + ':' +
+                        String(now.getUTCMinutes()).padStart(2, '0') + ':' +
+                        String(now.getUTCSeconds()).padStart(2, '0');
+    },
+    toggleSidebar() { 
+        this.sidebarOpen = !this.sidebarOpen;
+    }
+}"
+    class="text-text-primary min-h-screen"
+>
+    <!-- Top Navigation -->
+    <nav class="fixed top-0 left-0 right-0 bg-surface-active shadow-lg z-50 px-4 sm:px-6 py-3 flex justify-between items-center glass-effect">
+        <div class="flex items-center space-x-4">
+            <button 
+                @click="toggleSidebar()" 
+                class="text-text-primary hover:text-primary-400 transition-colors p-1"
+                aria-label="Toggle sidebar"
+            >
+                <i class="fas fa-bars text-lg"></i>
+            </button>
+            <div class="flex items-center space-x-2">
+                <img src="https://ui-avatars.com/api/?name=YouCode&background=00e68c&color=fff" class="h-8 w-8 rounded" alt="YouCode Logo">
+                <span class="text-text-primary font-bold tracking-wider hidden sm:inline-block">INTRANET</span>
+            </div>
+        </div>
+        
+        <div class="flex items-center space-x-2 sm:space-x-4">
+            <!-- Search -->
+            <div class="relative">
+                <input 
+                    x-model="searchQuery"
+                    type="text" 
+                    placeholder="Search..." 
+                    class="bg-surface rounded-full px-3.5 py-1.5 text-sm text-text-primary placeholder-text-muted focus:outline-none focus:ring-2 focus:ring-accent-400 w-40 sm:w-auto"
+                >
+                <button class="absolute right-3.5 top-2 text-text-secondary hover:text-primary-400 transition-colors" aria-label="Search">
+                    <i class="fas fa-search"></i>
+                </button>
+            </div>
+
+            <!-- Date Display -->
+            <div class="hidden md:flex items-center text-sm text-text-secondary">
+                <i class="far fa-calendar-alt mr-2"></i>
+                <span x-text="currentDateTime"></span>
+            </div>
+            <!-- Notifications -->
+            <div class="relative" x-data="{ notificationOpen: false }">
+                <button 
+                    @click="notificationOpen = !notificationOpen"
+                    @click.outside="notificationOpen = false"
+                    class="relative text-text-primary hover:text-primary-400 transition-colors p-2"
+                    aria-label="Notifications"
+                >
+                    <i class="fas fa-bell text-lg"></i>
+                    <span class="absolute -top-1 -right-1 bg-secondary-500 text-text-primary text-xs rounded-full w-5 h-5 flex items-center justify-center">
+                        0
+                    </span>
+                </button>
+                
+                <!-- Notifications Dropdown -->
+                <div 
+                    x-show="notificationOpen"
+                    x-cloak
+                    x-transition:enter="transition ease-out duration-200"
+                    x-transition:enter-start="opacity-0 scale-95"
+                    x-transition:enter-end="opacity-100 scale-100"
+                    x-transition:leave="transition ease-in duration-150"
+                    x-transition:leave-start="opacity-100 scale-100"
+                    x-transition:leave-end="opacity-0 scale-95"
+                    class="absolute right-0 mt-2 w-80 bg-surface rounded-lg shadow-card overflow-hidden z-50 glass-effect"
+                >
+                    <div class="px-4 py-3 border-b border-background-light bg-surface-muted">
+                        <h3 class="text-sm font-medium text-text-primary">Notifications</h3>
+                    </div>
+                    <div class="max-h-96 overflow-y-auto">
+                        <div class="flex items-center justify-center h-32 text-text-muted text-sm">
+                            No notifications yet
+                        </div>
+                    </div>
+                    <div class="px-4 py-2 border-t border-background-light bg-surface-muted text-center">
+                        <a href="#" class="text-sm text-primary-400 hover:text-primary-300 font-medium">
+                            View all notifications
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Profile -->
+            <div class="relative" x-data="{ profileOpen: false }">
+                <button 
+                    @click="profileOpen = !profileOpen"
+                    @click.outside="profileOpen = false"
+                    class="flex items-center space-x-2 text-text-primary hover:text-primary-400 transition-colors rounded-full focus:outline-none focus:ring-2 focus:ring-accent-500"
+                    aria-label="User menu"
+                >
+                    <img 
+                        src="https://ui-avatars.com/api/?name=Rida+Chaanoun&background=00e68c&color=fff" 
+                        class="w-8 h-8 rounded-full border-2 border-accent-500"
+                        alt="Rida Chaanoun profile picture"
+                    >
+                    <span class="font-medium hidden sm:inline-block">Rida Chaanoun</span>
+                    <i class="fas fa-chevron-down text-xs hidden sm:inline-block"></i>
+                </button>
+                
+                <!-- Profile Dropdown -->
+                <div 
+                    x-show="profileOpen"
+                    x-cloak
+                    x-transition:enter="transition ease-out duration-200"
+                    x-transition:enter-start="opacity-0 scale-95"
+                    x-transition:enter-end="opacity-100 scale-100"
+                    x-transition:leave="transition ease-in duration-150"
+                    x-transition:leave-start="opacity-100 scale-100"
+                    x-transition:leave-end="opacity-0 scale-95"
+                    class="absolute right-0 mt-2 w-48 bg-surface rounded-lg shadow-card overflow-hidden z-50 glass-effect"
+                >
+                    <div class="py-1">
+                        <a href="#" class="block px-4 py-2 text-sm text-text-primary hover:bg-surface-hover">
+                            <i class="fas fa-user mr-2 text-primary-400"></i> Your Profile
+                        </a>
+                        <a href="#" class="block px-4 py-2 text-sm text-text-primary hover:bg-surface-hover">
+                            <i class="fas fa-cog mr-2 text-primary-400"></i> Settings
+                        </a>
+                        <a href="#" class="block px-4 py-2 text-sm text-text-primary hover:bg-surface-hover">
+                            <i class="fas fa-question-circle mr-2 text-primary-400"></i> Help Center
+                        </a>
+                        <div class="border-t border-background-light"></div>
+                        <a href="#" class="block px-4 py-2 text-sm text-text-primary hover:bg-surface-hover">
+                            <i class="fas fa-sign-out-alt mr-2 text-secondary-400"></i> Sign out
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Sidebar -->
+    <div 
+        :class="sidebarOpen ? 'w-64' : 'w-20'" 
+        class="fixed top-14 bottom-0 bg-surface shadow-lg transition-all duration-300 z-40 overflow-y-auto glass-effect"
+    >
+        <div class="p-4 flex items-center space-x-3 mb-4 border-b border-background-light pb-4">
+            <img 
+                src="https://www.shutterstock.com/image-photo/young-handsome-man-beard-wearing-260nw-1768126784.jpg" 
+                class="w-10 h-10 rounded-full border-2 border-accent-500"
+                alt="User Profile"
+            >
+            <div x-show="sidebarOpen" x-transition>
+                <h3 class="font-medium text-text-primary">Rida Chaanoun</h3>
+                <p class="text-xs text-text-muted" x-text="'@' + currentUser">@ridachaanoun</p>
+            </div>
+        </div>
+        
+        <nav class="px-2">
+            <a href="#" class="flex items-center py-3 px-3 mb-1 rounded-lg text-text-primary bg-background-element group transition-colors shadow-soft glow-on-hover">
+                <i class="fas fa-home w-6 text-center text-lg text-primary-400"></i>
+                <span x-show="sidebarOpen" x-transition class="ml-3">Home</span>
+            </a>
+            <a href="#" class="flex items-center py-3 px-3 mb-1 rounded-lg text-text-primary hover:bg-surface-hover group transition-colors">
+                <i class="fas fa-users w-6 text-center text-lg group-hover:text-primary-400"></i>
+                <span x-show="sidebarOpen" x-transition class="ml-3">Network</span>
+            </a>
+            <a href="#" class="flex items-center py-3 px-3 mb-1 rounded-lg text-text-primary hover:bg-surface-hover group transition-colors">
+                <i class="fas fa-chalkboard w-6 text-center text-lg group-hover:text-primary-400"></i>
+                <span x-show="sidebarOpen" x-transition class="ml-3">Classrooms</span>
+            </a>
+            <a href="#" class="flex items-center py-3 px-3 mb-1 rounded-lg text-text-primary hover:bg-surface-hover group transition-colors">
+                <i class="fas fa-bus w-6 text-center text-lg group-hover:text-primary-400"></i>
+                <span x-show="sidebarOpen" x-transition class="ml-3">Transport Booking</span>
+            </a>
+            <a href="#" class="flex items-center py-3 px-3 mb-1 rounded-lg text-text-primary hover:bg-surface-hover group transition-colors relative">
+                <i class="fas fa-store w-6 text-center text-lg group-hover:text-primary-400"></i>
+                <span x-show="sidebarOpen" x-transition class="ml-3">Marketplace</span>
+                <span 
+                    x-show="sidebarOpen" 
+                    x-transition
+                    class="ml-2 bg-secondary-500 text-xs px-2 py-0.5 rounded-full"
+                >
+                    New
+                </span>
+            </a>
+            
+            <!-- Bottom section for settings -->
+            <div class="mt-auto border-t border-background-light pt-4 mt-8" x-show="sidebarOpen" x-transition>
+                <h6 class="text-xs uppercase text-text-muted font-semibold px-3 mb-2">Settings</h6>
+                <a href="#" class="flex items-center py-2 px-3 mb-1 rounded-lg text-text-primary hover:bg-surface-hover group transition-colors">
+                    <i class="fas fa-cog w-6 text-center text-lg group-hover:text-primary-400"></i>
+                    <span class="ml-3">Preferences</span>
+                </a>
+                <a href="#" class="flex items-center py-2 px-3 mb-1 rounded-lg text-text-primary hover:bg-surface-hover group transition-colors">
+                    <i class="fas fa-shield-alt w-6 text-center text-lg group-hover:text-primary-400"></i>
+                    <span class="ml-3">Security</span>
+                </a>
+            </div>
+        </nav>
+    </div>
+<!-- Main Content -->
+<main 
+    :class="sidebarOpen ? 'ml-64' : 'ml-20'" 
+    class="pt-16 px-4 sm:px-6 lg:px-8 pb-8 transition-all duration-300 mt-12"
+>
+    <!-- Page Header with Improved Design -->
+    <div class="flex flex-col md:flex-row md:items-center md:justify-between mb-8">
+        <div class="relative">
+          <h1 class="text-3xl font-bold bg-gradient-to-r from-primary-400 to-primary-600 bg-clip-text text-transparent inline-block">
+            YouCode Classrooms
+          </h1>
+          <div class="h-1 bg-gradient-to-r from-primary-400 to-primary-600 rounded-full w-3/4 mt-1"></div>
+        </div>
+        <div class="flex items-center space-x-3 mt-4 md:mt-0">
+          <div class="glass-effect rounded-full py-2 px-4 flex items-center shadow-glow">
+            <span class="text-text-secondary text-sm mr-2">Total Classrooms:</span>
+            <span class="text-primary-400 font-medium text-lg">12</span>
+          </div>
+        </div>
+      </div>
+    
+      <!-- Enhanced Filter Bar -->
+      <div class="bg-surface rounded-xl shadow-card p-6 mb-8 glass-effect">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <!-- Search Bar with Improved Design -->
+          <div class="relative">
+            <input 
+              type="text" 
+              placeholder="Search classroom..." 
+              class="bg-surface-hover w-full rounded-full px-5 py-3 text-text-primary placeholder-text-muted focus:outline-none focus:ring-2 focus:ring-primary-400 pr-12"
+            >
+            <button class="absolute right-4 top-3 text-primary-400 hover:text-primary-300 transition-colors">
+              <i class="fas fa-search text-lg"></i>
+            </button>
+          </div>
+    
+          <!-- Campus Filter Dropdown -->
+          <div class="relative">
+            <select class="appearance-none bg-surface-hover w-full rounded-full px-5 py-3 text-text-primary focus:outline-none focus:ring-2 focus:ring-primary-400 cursor-pointer pr-12">
+              <option value="">All Campuses</option>
+              <option value="1" class="text-text-secondary">Youssoufia</option>
+              <option value="2" class="text-text-secondary">Safi</option>
+            </select>
+            <div class="absolute inset-y-0 right-0 flex items-center pr-4 pointer-events-none">
+              <i class="fas fa-map-marker-alt text-primary-400"></i>
+            </div>
+          </div>
+    
+          <!-- Level Filter Dropdown -->
+          <div class="relative">
+            <select class="appearance-none bg-surface-hover w-full rounded-full px-5 py-3 text-text-primary focus:outline-none focus:ring-2 focus:ring-primary-400 cursor-pointer pr-12">
+              <option value="">All Levels</option>
+              <option value="1" class="text-text-secondary">1ère Année</option>
+              <option value="2" class="text-text-secondary">2ème Année</option>
+              <option value="3" class="text-text-secondary">SAS</option>
+            </select>
+            <div class="absolute inset-y-0 right-0 flex items-center pr-4 pointer-events-none">
+              <i class="fas fa-layer-group text-primary-400"></i>
+            </div>
+          </div>
+        </div>
+      </div>
+    
+      <!-- Visual Divider -->
+      <div class="flex items-center mb-8">
+        <div class="h-0.5 bg-gradient-to-r from-transparent via-primary-500/30 to-transparent flex-grow"></div>
+        <div class="px-4">
+          <span class="bg-surface rounded-full w-10 h-10 flex items-center justify-center shadow-glow">
+            <i class="fas fa-chalkboard text-primary-400"></i>
+          </span>
+        </div>
+        <div class="h-0.5 bg-gradient-to-r from-transparent via-primary-500/30 to-transparent flex-grow"></div>
+      </div>
+    
+      <!-- Classroom Grid -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+        <!-- Classroom Card 1 -->
+        <div class="bg-surface rounded-xl overflow-hidden shadow-card hover:shadow-glow transition-all duration-300 transform hover:-translate-y-1">
+          <!-- Cover Image with Gradient Overlay -->
+          <div class="relative">
+            <a href="#" class="block">
+              <div class="h-44 bg-cover bg-center bg-no-repeat" style="background-image: url('https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80');">
+                <div class="absolute inset-0 bg-gradient-to-t from-background-dark/80 to-transparent"></div>
+              </div>
+            </a>
+            <!-- Team Members Photos -->
+            <div class="absolute bottom-0 right-0 p-3 flex justify-end space-x-2">
+              <!-- Delegate 1 -->
+              <div 
+                class="w-10 h-10 rounded-lg overflow-hidden border-2 border-surface transform hover:scale-110 transition-transform cursor-pointer hover:border-primary-400 shadow-lg"
+                title="Back-up: Abdelhafid Belfqir"
+              >
+                <img 
+                  src="https://randomuser.me/api/portraits/men/32.jpg" 
+                  alt="Abdelhafid Belfqir"
+                  class="w-full h-full object-cover"
+                >
+              </div>
+              <!-- Delegate 2 -->
+              <div 
+                class="w-10 h-10 rounded-lg overflow-hidden border-2 border-surface transform hover:scale-110 transition-transform cursor-pointer hover:border-primary-400 shadow-lg"
+                title="Abdeljalil El Filaly"
+              >
+                <img 
+                  src="https://randomuser.me/api/portraits/men/42.jpg" 
+                  alt="Abdeljalil El Filaly"
+                  class="w-full h-full object-cover"
+                >
+              </div>
+              <!-- Trainer -->
+              <div 
+                class="w-10 h-10 rounded-lg overflow-hidden border-2 border-primary-500 transform hover:scale-110 transition-transform cursor-pointer shadow-glow"
+                title="Trainer: Ilyass Chakir"
+              >
+                <img 
+                  src="https://randomuser.me/api/portraits/men/22.jpg" 
+                  alt="Ilyass Chakir"
+                  class="w-full h-full object-cover"
+                >
+              </div>
+            </div>
+          </div>
+    
+          <!-- Card Content -->
+          <div class="p-5">
+            <a href="#" class="block">
+              <h3 class="text-xl font-semibold text-text-primary mb-3 hover:text-primary-400 transition-colors">MernOps Masters</h3>
+            </a>
+            
+            <!-- Details List -->
+            <div class="space-y-2.5 text-sm">
+              <!-- Level -->
+              <div class="flex items-center justify-between">
+                <div class="flex items-center">
+                  <div class="w-6 h-6 rounded-full flex items-center justify-center bg-surface-hover mr-3">
+                    <i class="fas fa-arrow-trend-up text-primary-400 text-xs"></i>
+                  </div>
+                  <span class="text-text-secondary">Level</span>
+                </div>
+                <span class="font-medium text-text-primary">2ème Année</span>
+              </div>
+              
+              <!-- Coach -->
+              <div class="flex items-center justify-between">
+                <div class="flex items-center">
+                  <div class="w-6 h-6 rounded-full flex items-center justify-center bg-surface-hover mr-3">
+                    <i class="fas fa-briefcase text-primary-400 text-xs"></i>
+                  </div>
+                  <span class="text-text-secondary">Coach</span>
+                </div>
+                <span class="font-medium text-text-primary cursor-pointer hover:text-primary-400 transition-colors">Ilyass Chakir</span>
+              </div>
+              
+              <!-- Learners -->
+              <div class="flex items-center justify-between">
+                <div class="flex items-center">
+                  <div class="w-6 h-6 rounded-full flex items-center justify-center bg-surface-hover mr-3">
+                    <i class="fas fa-user-group text-primary-400 text-xs"></i>
+                  </div>
+                  <span class="text-text-secondary">Learners</span>
+                </div>
+                <span class="font-medium text-text-primary">16</span>
+              </div>
+              
+              <!-- Delegate -->
+              <div class="flex items-center justify-between">
+                <div class="flex items-center">
+                  <div class="w-6 h-6 rounded-full flex items-center justify-center bg-surface-hover mr-3">
+                    <i class="fas fa-user-shield text-primary-400 text-xs"></i>
+                  </div>
+                  <span class="text-text-secondary">Delegate</span>
+                </div>
+                <span class="font-medium text-text-primary cursor-pointer hover:text-primary-400 transition-colors">Abdeljalil El Filaly</span>
+              </div>
+              
+              <!-- Campus -->
+              <div class="flex items-center justify-between">
+                <div class="flex items-center">
+                  <div class="w-6 h-6 rounded-full flex items-center justify-center bg-surface-hover mr-3">
+                    <i class="fas fa-school text-primary-400 text-xs"></i>
+                  </div>
+                  <span class="text-text-secondary">Campus</span>
+                </div>
+                <span class="font-medium text-text-primary">Youssoufia</span>
+              </div>
+              
+              <!-- Promotion -->
+              <div class="flex items-center justify-between">
+                <div class="flex items-center">
+                  <div class="w-6 h-6 rounded-full flex items-center justify-center bg-surface-hover mr-3">
+                    <i class="fas fa-calendar-check text-primary-400 text-xs"></i>
+                  </div>
+                  <span class="text-text-secondary">Promotion</span>
+                </div>
+                <span class="font-medium text-text-primary">2024 / 2025</span>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Card Footer -->
+          <div class="px-5 py-3 bg-surface-hover flex justify-center">
+            <a href="#" class="text-primary-400 hover:text-primary-300 text-sm font-medium flex items-center">
+              View Classroom <i class="fas fa-chevron-right ml-2"></i>
+            </a>
+          </div>
+        </div>
+    
+        <!-- Classroom Card 2 -->
+        <div class="bg-surface rounded-xl overflow-hidden shadow-card hover:shadow-glow transition-all duration-300 transform hover:-translate-y-1">
+          <!-- Cover Image with Gradient Overlay -->
+          <div class="relative">
+            <a href="#" class="block">
+              <div class="h-44 bg-cover bg-center bg-no-repeat" style="background-image: url('https://images.unsplash.com/photo-1542831371-29b0f74f9713?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80');">
+                <div class="absolute inset-0 bg-gradient-to-t from-background-dark/80 to-transparent"></div>
+              </div>
+            </a>
+            <!-- Team Members Photos -->
+            <div class="absolute bottom-0 right-0 p-3 flex justify-end space-x-2">
+              <!-- Delegate -->
+              <div 
+                class="w-10 h-10 rounded-lg overflow-hidden border-2 border-surface transform hover:scale-110 transition-transform cursor-pointer hover:border-primary-400 shadow-lg"
+                title="Sara Ahmed"
+              >
+                <img 
+                  src="https://randomuser.me/api/portraits/women/33.jpg" 
+                  alt="Sara Ahmed"
+                  class="w-full h-full object-cover"
+                >
+              </div>
+              <!-- Trainer -->
+              <div 
+                class="w-10 h-10 rounded-lg overflow-hidden border-2 border-primary-500 transform hover:scale-110 transition-transform cursor-pointer shadow-glow"
+                title="Trainer: Mohammed Alami"
+              >
+                <img 
+                  src="https://randomuser.me/api/portraits/men/55.jpg" 
+                  alt="Mohammed Alami"
+                  class="w-full h-full object-cover"
+                >
+              </div>
+            </div>
+          </div>
+    
+          <!-- Card Content -->
+          <div class="p-5">
+            <a href="#" class="block">
+              <h3 class="text-xl font-semibold text-text-primary mb-3 hover:text-primary-400 transition-colors">AI Architects</h3>
+            </a>
+            
+            <!-- Details List -->
+            <div class="space-y-2.5 text-sm">
+              <!-- Level -->
+              <div class="flex items-center justify-between">
+                <div class="flex items-center">
+                  <div class="w-6 h-6 rounded-full flex items-center justify-center bg-surface-hover mr-3">
+                    <i class="fas fa-arrow-trend-up text-primary-400 text-xs"></i>
+                  </div>
+                  <span class="text-text-secondary">Level</span>
+                </div>
+                <span class="font-medium text-text-primary">1ère Année</span>
+              </div>
+              
+              <!-- Coach -->
+              <div class="flex items-center justify-between">
+                <div class="flex items-center">
+                  <div class="w-6 h-6 rounded-full flex items-center justify-center bg-surface-hover mr-3">
+                    <i class="fas fa-briefcase text-primary-400 text-xs"></i>
+                  </div>
+                  <span class="text-text-secondary">Coach</span>
+                </div>
+                <span class="font-medium text-text-primary cursor-pointer hover:text-primary-400 transition-colors">Mohammed Alami</span>
+              </div>
+              
+              <!-- Learners -->
+              <div class="flex items-center justify-between">
+                <div class="flex items-center">
+                  <div class="w-6 h-6 rounded-full flex items-center justify-center bg-surface-hover mr-3">
+                    <i class="fas fa-user-group text-primary-400 text-xs"></i>
+                  </div>
+                  <span class="text-text-secondary">Learners</span>
+                </div>
+                <span class="font-medium text-text-primary">18</span>
+              </div>
+              
+              <!-- Delegate -->
+              <div class="flex items-center justify-between">
+                <div class="flex items-center">
+                  <div class="w-6 h-6 rounded-full flex items-center justify-center bg-surface-hover mr-3">
+                    <i class="fas fa-user-shield text-primary-400 text-xs"></i>
+                  </div>
+                  <span class="text-text-secondary">Delegate</span>
+                </div>
+                <span class="font-medium text-text-primary cursor-pointer hover:text-primary-400 transition-colors">Sara Ahmed</span>
+              </div>
+              
+              <!-- Campus -->
+              <div class="flex items-center justify-between">
+                <div class="flex items-center">
+                  <div class="w-6 h-6 rounded-full flex items-center justify-center bg-surface-hover mr-3">
+                    <i class="fas fa-school text-primary-400 text-xs"></i>
+                  </div>
+                  <span class="text-text-secondary">Campus</span>
+                </div>
+                <span class="font-medium text-text-primary">Safi</span>
+              </div>
+              
+              <!-- Promotion -->
+              <div class="flex items-center justify-between">
+                <div class="flex items-center">
+                  <div class="w-6 h-6 rounded-full flex items-center justify-center bg-surface-hover mr-3">
+                    <i class="fas fa-calendar-check text-primary-400 text-xs"></i>
+                  </div>
+                  <span class="text-text-secondary">Promotion</span>
+                </div>
+                <span class="font-medium text-text-primary">2024 / 2025</span>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Card Footer -->
+          <div class="px-5 py-3 bg-surface-hover flex justify-center">
+            <a href="#" class="text-primary-400 hover:text-primary-300 text-sm font-medium flex items-center">
+              View Classroom <i class="fas fa-chevron-right ml-2"></i>
+            </a>
+          </div>
+        </div>
+    
+        <!-- Classroom Card 3 -->
+        <div class="bg-surface rounded-xl overflow-hidden shadow-card hover:shadow-glow transition-all duration-300 transform hover:-translate-y-1">
+          <!-- Cover Image with Gradient Overlay -->
+          <div class="relative">
+            <a href="#" class="block">
+              <div class="h-44 bg-cover bg-center bg-no-repeat" style="background-image: url('https://images.unsplash.com/photo-1516321318423-f06f85e504b3?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80');">
+                <div class="absolute inset-0 bg-gradient-to-t from-background-dark/80 to-transparent"></div>
+              </div>
+            </a>
+            <!-- Team Members Photos -->
+            <div class="absolute bottom-0 right-0 p-3 flex justify-end space-x-2">
+              <!-- Delegate -->
+              <div 
+                class="w-10 h-10 rounded-lg overflow-hidden border-2 border-surface transform hover:scale-110 transition-transform cursor-pointer hover:border-primary-400 shadow-lg"
+                title="Omar Fadili"
+              >
+                <img 
+                  src="https://randomuser.me/api/portraits/men/75.jpg" 
+                  alt="Omar Fadili"
+                  class="w-full h-full object-cover"
+                >
+              </div>
+              <!-- Trainer -->
+              <div 
+                class="w-10 h-10 rounded-lg overflow-hidden border-2 border-primary-500 transform hover:scale-110 transition-transform cursor-pointer shadow-glow"
+                title="Trainer: Leila Benali"
+              >
+                <img 
+                  src="https://randomuser.me/api/portraits/women/65.jpg" 
+                  alt="Leila Benali"
+                  class="w-full h-full object-cover"
+                >
+              </div>
+            </div>
+          </div>
+    
+          <!-- Card Content -->
+          <div class="p-5">
+            <a href="#" class="block">
+              <h3 class="text-xl font-semibold text-text-primary mb-3 hover:text-primary-400 transition-colors">React Rockstars</h3>
+            </a>
+            
+            <!-- Details List -->
+            <div class="space-y-2.5 text-sm">
+              <!-- Level -->
+              <div class="flex items-center justify-between">
+                <div class="flex items-center">
+                  <div class="w-6 h-6 rounded-full flex items-center justify-center bg-surface-hover mr-3">
+                    <i class="fas fa-arrow-trend-up text-primary-400 text-xs"></i>
+                  </div>
+                  <span class="text-text-secondary">Level</span>
+                </div>
+                <span class="font-medium text-text-primary">2ème Année</span>
+              </div>
+              
+              <!-- Coach -->
+              <div class="flex items-center justify-between">
+                <div class="flex items-center">
+                  <div class="w-6 h-6 rounded-full flex items-center justify-center bg-surface-hover mr-3">
+                    <i class="fas fa-briefcase text-primary-400 text-xs"></i>
+                  </div>
+                  <span class="text-text-secondary">Coach</span>
+                </div>
+                <span class="font-medium text-text-primary cursor-pointer hover:text-primary-400 transition-colors">Leila Benali</span>
+              </div>
+              
+              <!-- Learners -->
+              <div class="flex items-center justify-between">
+                <div class="flex items-center">
+                  <div class="w-6 h-6 rounded-full flex items-center justify-center bg-surface-hover mr-3">
+                    <i class="fas fa-user-group text-primary-400 text-xs"></i>
+                  </div>
+                  <span class="text-text-secondary">Learners</span>
+                </div>
+                <span class="font-medium text-text-primary">15</span>
+              </div>
+              
+              <!-- Delegate -->
+              <div class="flex items-center justify-between">
+                <div class="flex items-center">
+                  <div class="w-6 h-6 rounded-full flex items-center justify-center bg-surface-hover mr-3">
+                    <i class="fas fa-user-shield text-primary-400 text-xs"></i>
+                  </div>
+                  <span class="text-text-secondary">Delegate</span>
+                </div>
+                <span class="font-medium text-text-primary cursor-pointer hover:text-primary-400 transition-colors">Omar Fadili</span>
+              </div>
+              
+              <!-- Campus -->
+              <div class="flex items-center justify-between">
+                <div class="flex items-center">
+                  <div class="w-6 h-6 rounded-full flex items-center justify-center bg-surface-hover mr-3">
+                    <i class="fas fa-school text-primary-400 text-xs"></i>
+                  </div>
+                  <span class="text-text-secondary">Campus</span>
+                </div>
+                <span class="font-medium text-text-primary">Youssoufia</span>
+              </div>
+              
+              <!-- Promotion -->
+              <div class="flex items-center justify-between">
+                <div class="flex items-center">
+                  <div class="w-6 h-6 rounded-full flex items-center justify-center bg-surface-hover mr-3">
+                    <i class="fas fa-calendar-check text-primary-400 text-xs"></i>
+                  </div>
+                  <span class="text-text-secondary">Promotion</span>
+                </div>
+                <span class="font-medium text-text-primary">2024 / 2025</span>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Card Footer -->
+          <div class="px-5 py-3 bg-surface-hover flex justify-center">
+            <a href="#" class="text-primary-400 hover:text-primary-300 text-sm font-medium flex items-center">
+              View Classroom <i class="fas fa-chevron-right ml-2"></i>
+            </a>
+          </div>
+        </div>
+        
+        <!-- Classroom Card 4 -->
+        <div class="bg-surface rounded-xl overflow-hidden shadow-card hover:shadow-glow transition-all duration-300 transform hover:-translate-y-1">
+          <!-- Cover Image with Gradient Overlay -->
+          <div class="relative">
+            <a href="#" class="block">
+              <div class="h-44 bg-cover bg-center bg-no-repeat" style="background-image: url('https://images.unsplash.com/photo-1484417894907-623942c8ee29?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80');">
+                <div class="absolute inset-0 bg-gradient-to-t from-background-dark/80 to-transparent"></div>
+              </div>
+            </a>
+            <!-- Team Members Photos -->
+            <div class="absolute bottom-0 right-0 p-3 flex justify-end space-x-2">
+              <!-- Delegate 1 -->
+              <div 
+                class="w-10 h-10 rounded-lg overflow-hidden border-2 border-surface transform hover:scale-110 transition-transform cursor-pointer hover:border-primary-400 shadow-lg"
+                title="Hassan Mekouar"
+              >
+                <img 
+                  src="https://randomuser.me/api/portraits/men/85.jpg" 
+                  alt="Hassan Mekouar"
+                  class="w-full h-full object-cover"
+                >
+              </div>
+              <!-- Trainer -->
+              <div 
+                class="w-10 h-10 rounded-lg overflow-hidden border-2 border-primary-500 transform hover:scale-110 transition-transform cursor-pointer shadow-glow"
+                title="Trainer: Karim Mansouri"
+              >
+                <img 
+                  src="https://randomuser.me/api/portraits/men/35.jpg" 
+                  alt="Karim Mansouri"
+                  class="w-full h-full object-cover"
+                >
+              </div>
+            </div>
+          </div>
+    
+          <!-- Card Content -->
+          <div class="p-5">
+            <a href="#" class="block">
+              <h3 class="text-xl font-semibold text-text-primary mb-3 hover:text-primary-400 transition-colors">SAS Digital Ninjas</h3>
+            </a>
+            
+            <!-- Details List -->
+            <div class="space-y-2.5 text-sm">
+              <!-- Level -->
+              <div class="flex items-center justify-between">
+                <div class="flex items-center">
+                  <div class="w-6 h-6 rounded-full flex items-center justify-center bg-surface-hover mr-3">
+                    <i class="fas fa-arrow-trend-up text-primary-400 text-xs"></i>
+                  </div>
+                  <span class="text-text-secondary">Level</span>
+                </div>
+                <span class="font-medium text-text-primary">SAS</span>
+              </div>
+              
+              <!-- Coach -->
+              <div class="flex items-center justify-between">
+                <div class="flex items-center">
+                  <div class="w-6 h-6 rounded-full flex items-center justify-center bg-surface-hover mr-3">
+                    <i class="fas fa-briefcase text-primary-400 text-xs"></i>
+                  </div>
+                  <span class="text-text-secondary">Coach</span>
+                </div>
+                <span class="font-medium text-text-primary cursor-pointer hover:text-primary-400 transition-colors">Karim Mansouri</span>
+              </div>
+              
+              <!-- Learners -->
+              <div class="flex items-center justify-between">
+                <div class="flex items-center">
+                  <div class="w-6 h-6 rounded-full flex items-center justify-center bg-surface-hover mr-3">
+                    <i class="fas fa-user-group text-primary-400 text-xs"></i>
+                  </div>
+                  <span class="text-text-secondary">Learners</span>
+                </div>
+                <span class="font-medium text-text-primary">20</span>
+              </div>
+              
+              <!-- Delegate -->
+              <div class="flex items-center justify-between">
+                <div class="flex items-center">
+                  <div class="w-6 h-6 rounded-full flex items-center justify-center bg-surface-hover mr-3">
+                    <i class="fas fa-user-shield text-primary-400 text-xs"></i>
+                  </div>
+                  <span class="text-text-secondary">Delegate</span>
+                </div>
+                <span class="font-medium text-text-primary cursor-pointer hover:text-primary-400 transition-colors">Hassan Mekouar</span>
+              </div>
+              
+              <!-- Campus -->
+              <div class="flex items-center justify-between">
+                <div class="flex items-center">
+                  <div class="w-6 h-6 rounded-full flex items-center justify-center bg-surface-hover mr-3">
+                    <i class="fas fa-school text-primary-400 text-xs"></i>
+                  </div>
+                  <span class="text-text-secondary">Campus</span>
+                </div>
+                <span class="font-medium text-text-primary">Safi</span>
+              </div>
+              
+              <!-- Promotion -->
+              <div class="flex items-center justify-between">
+                <div class="flex items-center">
+                  <div class="w-6 h-6 rounded-full flex items-center justify-center bg-surface-hover mr-3">
+                    <i class="fas fa-calendar-check text-primary-400 text-xs"></i>
+                  </div>
+                  <span class="text-text-secondary">Promotion</span>
+                </div>
+                <span class="font-medium text-text-primary">2024 / 2025</span>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Card Footer -->
+          <div class="px-5 py-3 bg-surface-hover flex justify-center">
+            <a href="#" class="text-primary-400 hover:text-primary-300 text-sm font-medium flex items-center">
+              View Classroom <i class="fas fa-chevron-right ml-2"></i>
+            </a>
+          </div>
+        </div>
+      </div>
+<!-- Footer -->
+<footer class="mt-12 text-center text-text-muted text-sm">
+    <p>© 2025 YouCode Intranet - Current time: <span x-text="currentDateTime"></span></p>
+</footer>
+</main>
+
+    </body>
+    </html>
